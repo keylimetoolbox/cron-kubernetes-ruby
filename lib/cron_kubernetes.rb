@@ -1,8 +1,27 @@
 # frozen_string_literal: true
 
+require "cron_kubernetes/configurable"
+require "cron_kubernetes/scheduler"
 require "cron_kubernetes/version"
 
 # Configure and deploy Kubernetes CronJobs from ruby
 module CronKubernetes
-  # Your code goes here...
+  extend Configurable
+
+  # Provide a CronJob manifest as a Hash
+  define_setting :manifest
+
+  # Provide shell output redirection (e.g. "2>&1" or ">> log")
+  define_setting :output
+
+  # For RVM support, and to load PATH and such, jobs are run through a bash shell.
+  # You can alter this with your own template, add `:job` where the job should go.
+  # Note that the job will be escaped.
+  define_setting :job_template, "/bin/bash -l -c :job"
+
+  class << self
+    def schedule(&block)
+      CronKubernetes::Scheduler.instance.instance_eval(&block)
+    end
+  end
 end
