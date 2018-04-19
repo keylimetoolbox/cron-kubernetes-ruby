@@ -19,9 +19,10 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
-  spec.bindir        = "bin"
-  spec.executables   << "cron_kubernetes"
   spec.require_paths = ["lib"]
+
+  spec.bindir = "bin"
+  spec.executables << "cron_kubernetes"
 
   spec.add_dependency "kubeclient", "~> 3.0"
 
