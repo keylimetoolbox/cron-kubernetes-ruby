@@ -97,6 +97,7 @@ for a discussion of how `command` works in Kubernetes.
 
 ## Usage
 
+### Create a Schedule
 Add a file to your source that defines the scheduled tasks. If you are using Rails, you could 
 put this in `config/initializers/cron_kuberentes.rb`. Or, if you want to make it work like the
 `whenever` gem you could add these lines to `config/schedule.rb` and then `require` that from your
@@ -117,20 +118,49 @@ For all jobs you may provide a `name` to name, which will be used with the `iden
 CronJob. If you do not provide a name `CronKubernetes` will try to figure one out from the job and
 pod templates plus a hash of the schedule and command.
 
-### Shell Commands
+#### Shell Commands
 
 A `command` runs any arbitrary shell command on a schedule. The first argument is the command to run.
 
 
-### Rake Tasks
+#### Rake Tasks
 
 A `rake` call runs a `rake` task on the schedule. Rake and Bundler must be installed and on the path 
 in the container The command it executes is `bundle exec rake ...`. 
 
-### Runners
+#### Runners
 
 A `runner` runs arbitrary ruby code under rails. Rails must be installed at `bin/rails` from the 
 working folder. The command it executes is `bin/rails runner '...'`.
+
+### Update Your Cluster
+
+Once you have configuration and cluster, then you can run the `cron_kubernetes` command
+to update your cluster. 
+
+```bash
+cron_kubernetes --configuration config/initializers/cron_kubernetes.rb --schedule config/schedule.rb
+```
+
+The command will read the provided configuration and current schedule, compare to any 
+CronJobs already in your cluster for this project (base on the `identifier`) and then 
+add/remove/update the CronJobs to bring match the schedule.
+
+You can provide either `--configuration` or `--schedule`, as long as between the files you have 
+loaded both a configuration and a schedule. For example, if they are in the same file, you would
+just pass a single value:
+
+```bash
+cron_kubernetes --schedule schedule.rb
+``` 
+
+If you are running in a Rails application where the initializers are auto-loaded, and your 
+schedule is defined in (or in a file required by) your initializer, you could run this within
+your Rails environment:
+
+```bash
+bin/rails runner cron_kubernetes
+``` 
 
 ## To Do
 - In place of `schedule`, support `every`/`at` syntax:
