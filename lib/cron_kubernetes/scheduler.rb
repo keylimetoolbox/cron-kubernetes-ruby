@@ -15,18 +15,18 @@ module CronKubernetes
     def rake(task, schedule:, name: nil)
       rake_command = "bundle exec rake #{task} --silent"
       rake_command = "RAILS_ENV=#{rails_env} #{rake_command}" if rails_env
-      @schedule << [schedule, make_command(rake_command), name]
+      @schedule << CronJob.new(schedule: schedule, command: make_command(rake_command), name: name)
     end
 
     def runner(ruby_command, schedule:, name: nil)
       env = nil
       env = "-e #{rails_env} " if rails_env
       runner_command = "bin/rails runner #{env}'#{ruby_command}'"
-      @schedule << [schedule, make_command(runner_command), name]
+      @schedule << CronJob.new(schedule: schedule, command: make_command(runner_command), name: name)
     end
 
     def command(command, schedule:, name: nil)
-      @schedule << [schedule, make_command(command), name]
+      @schedule << CronJob.new(schedule: schedule, command: make_command(command), name: name)
     end
 
     private
