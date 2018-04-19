@@ -2,6 +2,9 @@
 
 require "cron_kubernetes/configurable"
 require "cron_kubernetes/cron_job"
+require "cron_kubernetes/cron_tab"
+require "cron_kubernetes/kubeclient_context"
+require "cron_kubernetes/kubernetes_client"
 require "cron_kubernetes/scheduler"
 require "cron_kubernetes/version"
 
@@ -19,6 +22,9 @@ module CronKubernetes
   # You can alter this with your own template, add `:job` where the job should go.
   # Note that the job will be treated as a single shell argument or command.
   define_setting :job_template, %w[/bin/bash -l -c :job]
+
+  # Provide an identifier for this schedule (e.g. your application name)
+  define_setting :identifier
 
   class << self
     def schedule(&block)

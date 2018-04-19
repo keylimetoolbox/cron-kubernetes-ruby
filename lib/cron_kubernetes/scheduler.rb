@@ -9,24 +9,25 @@ module CronKubernetes
     attr_reader :schedule
 
     def initialize
-      @schedule = []
+      @schedule   = []
+      @identifier = CronKubernetes.identifier
     end
 
     def rake(task, schedule:, name: nil)
       rake_command = "bundle exec rake #{task} --silent"
       rake_command = "RAILS_ENV=#{rails_env} #{rake_command}" if rails_env
-      @schedule << CronJob.new(schedule: schedule, command: make_command(rake_command), name: name)
+      @schedule << new_cron_job(schedule, rake_command, name)
     end
 
     def runner(ruby_command, schedule:, name: nil)
       env = nil
       env = "-e #{rails_env} " if rails_env
       runner_command = "bin/rails runner #{env}'#{ruby_command}'"
-      @schedule << CronJob.new(schedule: schedule, command: make_command(runner_command), name: name)
+      @schedule << new_cron_job(schedule, runner_command, name)
     end
 
     def command(command, schedule:, name: nil)
-      @schedule << CronJob.new(schedule: schedule, command: make_command(command), name: name)
+      @schedule << new_cron_job(schedule, command, name)
     end
 
     private
@@ -39,6 +40,16 @@ module CronKubernetes
           arg
         end
       end
+    end
+
+    def new_cron_job(schedule, command, name)
+      CronJob.new(
+          schedule:     schedule,
+          command:      make_command(command),
+          job_manifest: CronKubernetes.manifest,
+          name:         name,
+          identifier:   @identifier
+      )
     end
 
     def rails_env

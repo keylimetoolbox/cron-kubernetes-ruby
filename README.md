@@ -21,19 +21,31 @@ Or install it yourself as:
 
 ## Configuration
 
-You can configure global settings for your cron jobs. Add a file to your source as following. 
-If you are using Rails, you can add this to something like `config/initializers/cron_kuberentes.rb`.
+You can configure global settings for your cron jobs. Add a file to your source like the example
+below. If you are using Rails, you can add this to something like `config/initializers/cron_kuberentes.rb`.
 
-You _must_ configure the `manifest` setting. The other settings are optional and default values
-are shown below.
+You _must_ configure the `identifier` and `manifest` settings. The other settings are optional
+and default values are shown below.
 
 ```ruby
-CronKubernetes.configure do |config|
+CronKubernetes.configuration do |config|
+  # Required
+  config.identifier   = "my-application"
   config.manifest     = YAML.read(File.join(Rails.root, "deploy", "kubernetes-job.yml"))
-  config.output       = ""
+
+  # Optional
+  config.output       = nil
   config.job_template = %w[/bin/bash -l -c :job]
 end
 ```
+
+### `identifier`
+Provide an identifier for this schedule. For example, you might use your application name.
+This is used by `CronKubernetes` to know which CronJobs are associated with this schedule
+so you should make sure it's unique within your cluster.
+
+`identifier` must be valid for a Kubernetes resource name and label value. Specifically,
+lowercase alphanumeric characters (`[a-z0-9A-Z]`), `-`, and `.`, and 63 characters or less.
 
 ### `manifest`
 
@@ -53,7 +65,7 @@ spec:
     spec:
       containers:
       - name: my-shell
-        image: busybox
+        image: ubuntu
       restartPolicy: OnFailure
 ```
 
@@ -78,10 +90,10 @@ This is a template that we use to execute your rake, rails runner, or shell comm
 in the container. The default template executes it in a login shell so that environment
 variables (and profile) are loaded. 
 
-You can modify this. The value should be an array of arguments. The first element of the
-array will be the Kubernetes pod `command`. The remainder will be the `args`. See
+You can modify this. The value should be an array with a command and arguments that will
+replace both `ENTRYPOINT` and `CMD` in the Docker image. See
 [Define a Command and Arguments for a Container](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)
-for a discussion of how `command` and `args` works in Kubernetes.
+for a discussion of how `command` works in Kubernetes.
 
 ## Usage
 
@@ -101,7 +113,9 @@ end
 For all jobs the command with change directories to either `Rails.root` if Rails is installed
 or the current working directory. These are evaluated when the scheduled tasks are loaded.
 
-For all jobs you may provide a `name` to name the CronJob.
+For all jobs you may provide a `name` to name, which will be used with the `identifier` to name the
+CronJob. If you do not provide a name `CronKubernetes` will try to figure one out from the job and
+pod templates plus a hash of the schedule and command.
 
 ### Shell Commands
 

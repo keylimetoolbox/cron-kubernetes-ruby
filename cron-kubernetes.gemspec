@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["jeremy.wadsack@gmail.com"]
 
   spec.summary       = "Configure and deploy Kubernetes CronJobs from ruby."
-  spec.description   = "Configure and deploy Kubernetes CronJobs from ruby"
+  spec.description   = "Configure and deploy Kubernetes CronJobs from ruby with a single schedule."
   spec.homepage      = "https://github.com/keylimetoolbox/cron-kubernetes"
   spec.license       = "MIT"
 
@@ -21,10 +21,15 @@ Gem::Specification.new do |spec|
   end
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "kubeclient", "~> 3.0"
+
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "bundler-audit", "~> 0"
   spec.add_development_dependency "mocha", "~> 1.3"
   spec.add_development_dependency "rake", "~> 12.3"
   spec.add_development_dependency "rspec", "~> 3.7"
   spec.add_development_dependency "rubocop", "~> 0.52", ">= 0.52.1"
+
+  # For connecting to a GKE cluster in development/test
+  spec.add_development_dependency "googleauth"
 end
