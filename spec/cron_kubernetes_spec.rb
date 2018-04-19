@@ -6,7 +6,7 @@ RSpec.describe CronKubernetes do
   end
 
   context "::configuration" do
-    context "job_template" do
+    context "manifest" do
       it "defaults nothing" do
         expect(CronKubernetes.output).to be_nil
       end
@@ -59,14 +59,14 @@ RSpec.describe CronKubernetes do
 
   context "job_template" do
     it "defaults to a bash shell" do
-      expect(CronKubernetes.job_template).to eq "/bin/bash -l -c :job"
+      expect(CronKubernetes.job_template).to eq %w[/bin/bash -l -c :job]
     end
 
     context do
       before do
         @job_template = CronKubernetes.job_template
         CronKubernetes.configuration do |config|
-          config.job_template = "/bin/zsh -c :job"
+          config.job_template = %w[/bin/zsh -c :job]
         end
       end
 
@@ -77,7 +77,7 @@ RSpec.describe CronKubernetes do
       end
 
       it "can be configured for anything" do
-        expect(CronKubernetes.job_template).to eq("/bin/zsh -c :job")
+        expect(CronKubernetes.job_template).to eq(%w[/bin/zsh -c :job])
       end
     end
   end

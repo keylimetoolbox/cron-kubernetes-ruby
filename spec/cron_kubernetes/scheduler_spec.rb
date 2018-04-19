@@ -27,18 +27,18 @@ RSpec.describe CronKubernetes::Scheduler do
 
         action
         expect(subject.schedule.length).to eq 1
-        command = subject.schedule.first.last
-        expect(command).to end_with " 2\\>\\&1"
+        command = subject.schedule.first[1]
+        expect(command.join).to end_with " 2>&1"
       end
     end
 
     it "includes the job template" do
-      expect(CronKubernetes.job_template).to eq "/bin/bash -l -c :job"
+      expect(CronKubernetes.job_template).to eq %w[/bin/bash -l -c :job]
 
       action
       expect(subject.schedule.length).to eq 1
-      command = subject.schedule.first.last
-      expect(command).to start_with "/bin/bash -l -c "
+      command = subject.schedule.first[1]
+      expect(command).to start_with %w[/bin/bash -l -c]
     end
   end
 
@@ -50,14 +50,14 @@ RSpec.describe CronKubernetes::Scheduler do
       expect(subject.schedule.length).to eq 1
       cron, command = *subject.schedule.first
       expect(cron).to eq "0 20 1 * *"
-      expect(command).to include "bundle\\ exec\\ rake\\ audit:state"
+      expect(command.join).to include "bundle exec rake audit:state"
     end
 
     it "properly escapes quotes in the rake task" do
       subject.rake("audit:state MAIL_TO='notice@example.com'", schedule: "0 20 1 * *")
       expect(subject.schedule.length).to eq 1
-      command = subject.schedule.first.last
-      expect(command).to include "MAIL_TO\\=\\'notice@example.com\\'"
+      command = subject.schedule.first[1]
+      expect(command.join).to include "MAIL_TO='notice@example.com'"
     end
 
     context "when RAILS_ENV is defined" do
@@ -73,8 +73,8 @@ RSpec.describe CronKubernetes::Scheduler do
       it "includes the RAILS_ENV" do
         action
         expect(subject.schedule.length).to eq 1
-        command = subject.schedule.first.last
-        expect(command).to include "RAILS_ENV\\=production"
+        command = subject.schedule.first[1]
+        expect(command.join).to include "RAILS_ENV=production"
       end
     end
 
@@ -82,8 +82,8 @@ RSpec.describe CronKubernetes::Scheduler do
       it "does not include the RAILS_ENV" do
         action
         expect(subject.schedule.length).to eq 1
-        command = subject.schedule.first.last
-        expect(command).not_to include "RAILS_ENV"
+        command = subject.schedule.first[1]
+        expect(command.join).not_to include "RAILS_ENV"
       end
     end
 
@@ -98,9 +98,8 @@ RSpec.describe CronKubernetes::Scheduler do
       expect(subject.schedule.length).to eq 1
       cron, command = *subject.schedule.first
       expect(cron).to eq "30 3 * * *"
-      expect(command).to include "bin/rails\\ runner\\ \\'puts\\ CronKubernetes.name\\'"
+      expect(command.join).to include "bin/rails runner 'puts CronKubernetes.name'"
     end
-
 
     context "when RAILS_ENV is defined" do
       before do
@@ -115,8 +114,8 @@ RSpec.describe CronKubernetes::Scheduler do
       it "includes the -e parameter" do
         action
         expect(subject.schedule.length).to eq 1
-        command = subject.schedule.first.last
-        expect(command).to include "\\ -e\\ production\\ "
+        command = subject.schedule.first[1]
+        expect(command.join).to include " -e production "
       end
     end
 
@@ -124,8 +123,8 @@ RSpec.describe CronKubernetes::Scheduler do
       it "does not include the RAILS_ENV" do
         action
         expect(subject.schedule.length).to eq 1
-        command = subject.schedule.first.last
-        expect(command).not_to include "\\ -e\\ "
+        command = subject.schedule.first[1]
+        expect(command.join).not_to include " -e "
       end
     end
 
@@ -140,7 +139,7 @@ RSpec.describe CronKubernetes::Scheduler do
       expect(subject.schedule.length).to eq 1
       cron, command = *subject.schedule.first
       expect(cron).to eq "0 1 1 1 *"
-      expect(command).to include "ls\\ -l"
+      expect(command.join).to include "ls -l"
     end
 
     include_examples "common"

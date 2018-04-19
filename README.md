@@ -31,7 +31,7 @@ are shown below.
 CronKubernetes.configure do |config|
   config.manifest     = YAML.read(File.join(Rails.root, "deploy", "kubernetes-job.yml"))
   config.output       = ""
-  config.job_template = "/bin/bash -l -c :job"
+  config.job_template = %w[/bin/bash -l -c :job]
 end
 ```
 
@@ -53,7 +53,8 @@ spec:
     spec:
       containers:
       - name: my-shell
-        image: ubuntu:latest
+        image: busybox
+      restartPolicy: OnFailure
 ```
 
 In the example above we show the manifest loading a file, just to make it
@@ -62,27 +63,60 @@ values, or anything else you want to do in the method, as long as you return
 a valid Kubernetes Job manifest as a `Hash`.
 
 When the job is run, the default command in the Docker instance is replaced with
-the command specified in the cron schedule (see below).
+the command specified in the cron schedule (see below). The command is run on the 
+first container in the pod.
 
 ### `output`
 
-By default no rediction is done, so that cron behaves as normal. If you would like you 
+By default no redirection is done; cron behaves as normal. If you would like you 
 can specify an option here to redirect as you would on a shell command. For example,
-`"2>&1` to collect STDERR in STDOUT or `>> /var/log/task.log` to send to a log file.
+`"2>&1` to collect STDERR in STDOUT or `>> /var/log/task.log` to append to a log file.
+
+### `job_template`
+
+This is a template that we use to execute your rake, rails runner, or shell command
+in the container. The default template executes it in a login shell so that environment
+variables (and profile) are loaded. 
+
+You can modify this. The value should be an array of arguments. The first element of the
+array will be the Kubernetes pod `command`. The remainder will be the `args`. See
+[Define a Command and Arguments for a Container](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)
+for a discussion of how `command` and `args` works in Kubernetes.
 
 ## Usage
 
-Add a file to your source that defines the scheduled tasks. If you are using Rails, you can add
-this to something like `config/initializers/cron_kuberentes.rb`. Or, if you are familiar with the
+Add a file to your source that defines the scheduled tasks. If you are using Rails, you could 
+put this in `config/initializers/cron_kuberentes.rb`. Or, if you want to make it work like the
 `whenever` gem you could add these lines to `config/schedule.rb` and then `require` that from your
 initializer.
 
 ```ruby
 CronKubernetes.schedule do
-  runner("CleanSweeper.run", schedule: "30 3 * * *")
-  rake "audit:state", schedule: "0 20 1 * *"
+  command "ls -l", schedule: "0 0 1 1 *"
+  rake "audit:state", schedule: "0 20 1 * *", name: "audit-state"
+  runner "CleanSweeper.run", schedule: "30 3 * * *"
 end
 ```
+
+For all jobs the command with change directories to either `Rails.root` if Rails is installed
+or the current working directory. These are evaluated when the scheduled tasks are loaded.
+
+For all jobs you may provide a `name` to name the CronJob.
+
+### Shell Commands
+
+A `command` runs any arbitrary shell command on a schedule. The first argument is the command to run.
+
+
+### Rake Tasks
+
+A `rake` call runs a `rake` task on the schedule. Rake and Bundler must be installed and on the path 
+in the container The command it executes is `bundle exec rake ...`. 
+
+### Runners
+
+A `runner` runs arbitrary ruby code under rails. Rails must be installed at `bin/rails` from the 
+working folder. The command it executes is `bin/rails runner '...'`.
 
 ## To Do
 - In place of `schedule`, support `every`/`at` syntax:
