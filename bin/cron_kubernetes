@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "cron_kubernetes"
+require "optparse"
+
+# Support looking up Google Default Application Credentials, if the gem is installed
+begin
+  require "googleauth"
+rescue LoadError
+  nil
+end
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: cron_kubernetes [options]"
+  opts.on("-c", "--configuration [file]", "Location of your configuration file") do |file|
+    require File.join(Dir.pwd, file) if file
+  end
+  opts.on("-c", "--schedule [file]", "Location of your schedule file") do |file|
+    require File.join(Dir.pwd, file) if file
+  end
+
+  opts.on("-v", "--version") do
+    puts "CronKubernetes v#{CronKubernetes::VERSION}"
+    exit(0)
+  end
+end.parse!
+
+CronKubernetes::CronTab.new.update
