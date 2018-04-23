@@ -31,7 +31,7 @@ and default values are shown below.
 CronKubernetes.configuration do |config|
   # Required
   config.identifier   = "my-application"
-  config.manifest     = YAML.read(File.join(Rails.root, "deploy", "kubernetes-job.yml"))
+  config.manifest     = YAML.load_file(File.join(Rails.root, "deploy", "kubernetes-job.yml"))
 
   # Optional
   config.output       = nil
