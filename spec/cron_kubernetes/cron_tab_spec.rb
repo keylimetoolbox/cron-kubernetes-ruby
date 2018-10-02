@@ -58,6 +58,7 @@ RSpec.describe CronKubernetes::CronTab do
     CronKubernetes::KubernetesClient.any_instance.stubs(:batch_beta1_client).returns client
     client.stubs(:get_cron_jobs).returns existing
     CronKubernetes::Scheduler.instance.stubs(:schedule).returns schedule
+    CronKubernetes.stubs(:identifier).returns("spec")
   end
 
   context "#udpate" do
@@ -80,6 +81,13 @@ RSpec.describe CronKubernetes::CronTab do
 
       it "removes the Kubernetes cron job" do
         client.expects(:delete_cron_job).with("spec-minutely", "default")
+        subject.update
+      end
+
+      it "does not remove jobs from other schedules" do
+        client.unstub(:get_cron_jobs)
+        client.expects(:get_cron_jobs).with(label_selector: "cron-kubernetes-identifier=spec").returns existing
+        client.stubs(:delete_cron_job)
         subject.update
       end
     end
