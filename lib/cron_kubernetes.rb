@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require "cron_kubernetes/configurable"
+require "cron_kubernetes/context/kubectl"
+require "cron_kubernetes/context/well_known"
 require "cron_kubernetes/cron_job"
 require "cron_kubernetes/cron_tab"
 require "cron_kubernetes/kubeclient_context"
@@ -25,6 +27,9 @@ module CronKubernetes
 
   # Provide an identifier for this schedule (e.g. your application name)
   define_setting :identifier
+
+  # A `kubeclient` for connection context, default attempts to read from cluster or `~/.kube/config`
+  define_setting :kubeclient, nil
 
   class << self
     def schedule(&block)

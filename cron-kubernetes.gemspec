@@ -24,8 +24,9 @@ Gem::Specification.new do |spec|
   spec.bindir = "bin"
   spec.executables << "cron_kubernetes"
 
-  spec.add_dependency "kubeclient", "~> 3.0"
+  spec.add_dependency "kubeclient", ">= 3.1.2", "< 5.0"
 
+  spec.add_development_dependency "appraisal"
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "bundler-audit", "~> 0"
   spec.add_development_dependency "mocha", "~> 1.3"

@@ -95,6 +95,29 @@ replace both `ENTRYPOINT` and `CMD` in the Docker image. See
 [Define a Command and Arguments for a Container](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)
 for a discussion of how `command` works in Kubernetes.
 
+### kubeclient
+The gem will automatically connect to the Kubernetes server in the following cases:
+- You are running this in [a standard Kubernetes cluster](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/#accessing-the-api-from-a-pod)
+- You are running on a system with `kubeclient` installed and
+  - the default cluster context has credentials
+  - the default cluster is GKE and your system has
+    [Google application default credentials](https://developers.google.com/identity/protocols/application-default-credentials)
+    installed
+
+There are many other ways to connect and you can do so by providing your own
+[configured `kubeclient`](https://github.com/abonas/kubeclient#usage):
+
+```ruby
+# config/initializers/resque-kubernetes.rb
+
+CronKubernetes.configuration do |config|
+  config.kubeclient = Kubeclient::Client.new("http://localhost:8080/apis/batch", "v1beta1")
+end
+```
+
+Because this uses the `CronJob` resource, make sure to connect to the `/apis/batch` API endpoint and 
+API version `v1beta1` in your client.
+
 ## Usage
 
 ### Create a Schedule
@@ -111,10 +134,10 @@ CronKubernetes.schedule do
 end
 ```
 
-For all jobs the command with change directories to either `Rails.root` if Rails is installed
+For all jobs the command will change directories to either `Rails.root` if Rails is installed
 or the current working directory. These are evaluated when the scheduled tasks are loaded.
 
-For all jobs you may provide a `name` to name, which will be used with the `identifier` to name the
+For all jobs you may provide a `name` that will be used with the `identifier` to name the
 CronJob. If you do not provide a name `CronKubernetes` will try to figure one out from the job and
 pod templates plus a hash of the schedule and command.
 
@@ -122,15 +145,14 @@ pod templates plus a hash of the schedule and command.
 
 A `command` runs any arbitrary shell command on a schedule. The first argument is the command to run.
 
-
 #### Rake Tasks
 
 A `rake` call runs a `rake` task on the schedule. Rake and Bundler must be installed and on the path 
-in the container The command it executes is `bundle exec rake ...`. 
+in the container. The command it executes is `bundle exec rake ...`.
 
 #### Runners
 
-A `runner` runs arbitrary ruby code under rails. Rails must be installed at `bin/rails` from the 
+A `runner` runs arbitrary ruby code under Rails. Rails must be installed at `bin/rails` from the
 working folder. The command it executes is `bin/rails runner '...'`.
 
 ### Update Your Cluster
@@ -170,21 +192,40 @@ bin/rails runner cron_kubernetes
   at: "[H]H:mm[am|pm]"
   ```
 
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. 
-
-You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. 
-
-To release a new version, update the version number in `lib/cron_kubernets/version.rb` and the `CHANGELOG.md`, 
-and then run `bundle exec rake release`, which will create a git tag for the version, 
-push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/keylimetoolbox/cron-kubernetes.
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/keylime-toolbox/cron-kubernetes-ruby.
+
+1. Fork it (`https://github.com/[my-github-username]/cron-kubernetes-ruby/fork`)
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Test your changes with `rake`, add new tests if needed
+4. Commit your changes (`git commit -am 'Add some feature'`)
+6. Push to the branch (`git push origin my-new-feature`)
+7. Open a new Pull Request
+
+### Development
+
+After checking out the repo, run `bin/setup` to install dependencies. Then,
+run `bin/rake` to run the test suite.
+
+You can run `bin/console` for an interactive prompt that will allow you to
+experiment.
+
+Write test for any code that you add. Test all changes by running `bin/rake`.
+This does the following, which you can also run separately while working.
+1. Run unit tests: `appraisal rake spec`
+2. Make sure that your code matches the styles: `rubocop`
+3. Verify if any dependent gems have open CVEs (you must update these):
+   `rake bundle:audit`
+
+## Release
+
+To release a new version, update the version number in
+`lib/cron_kubernetes/version.rb` and the `CHANGELOG.md`, then run
+`bundle exec rake release`, which will create a git tag for the version,
+push git commits and tags, and push the `.gem` file to
+[rubygems.org](https://rubygems.org).
 
 ## Acknowledgments
 
