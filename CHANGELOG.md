@@ -1,4 +1,4 @@
-# master (not yet released)
+# v1.0.0
 **Breaking Change:**
 - Requires `kubeclient` 3.1.2 or 4.x
 
