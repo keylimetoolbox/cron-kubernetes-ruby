@@ -1,3 +1,7 @@
+AllCops:
+  Exclude:
+    - "gemfiles/*"
+
 Documentation:
   Exclude:
     - "**/railtie.rb"
@@ -31,7 +35,9 @@ Style/FormatStringToken:
   EnforcedStyle: template
 Style/AsciiComments:
   Enabled: false
-
+Naming/FileName:
+  Exclude:
+    - "lib/cron-kubernetes.rb"
 Metrics/BlockLength:
   Exclude:
     - "*.gemspec"

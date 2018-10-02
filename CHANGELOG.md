@@ -1,2 +1,10 @@
+# master (not yet released)
+**Breaking Change:**
+- Requires `kubeclient` 3.1.2 or 4.x
+
+ **Changes:**
+- Add `kubeclient` configuration option for connecting to any Kubernetes server
+- Add Appraisal for testing with kubeclient 3.1.2 and 4.x
+
 # v0.1.0
 - Initial Release

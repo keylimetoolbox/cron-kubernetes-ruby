@@ -39,7 +39,7 @@ module CronKubernetes
     private
 
     def namespace
-      return job_manifest["metadata"]["namespace"] if job_manifest["metadata"]
+      return job_manifest["metadata"]["namespace"] if job_manifest["metadata"] && job_manifest["metadata"]["namespace"]
       "default"
     end
 

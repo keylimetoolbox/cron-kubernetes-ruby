@@ -3,13 +3,6 @@
 module CronKubernetes
   # The "table" of Kubernetes CronJobs that we manage in the cluster.
   class CronTab
-    attr_reader :client
-    private :client
-
-    def initialize
-      @client = CronKubernetes::KubernetesClient.new.batch_beta1_client
-    end
-
     # "Apply" the new configuration
     #   - remove from cluster any cron_jobs that are no longer in the schedule
     #   - add new jobs
@@ -23,6 +16,10 @@ module CronKubernetes
     end
 
     private
+
+    def client
+      @client ||= CronKubernetes::KubernetesClient.new.batch_beta1_client
+    end
 
     # Define a label for our jobs based on an identifier
     def label_selector

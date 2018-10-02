@@ -7,18 +7,21 @@ module CronKubernetes
       @batch_beta1_client ||= client("/apis/batch", "v1beta1")
     end
 
+    def namespace
+      context&.namespace
+    end
+
     private
 
     def client(scope, version = nil)
-      context = KubeclientContext.context
+      return CronKubernetes.kubeclient if CronKubernetes.kubeclient
       return unless context
+      Kubeclient::Client.new(context.endpoint + scope, version || context.version, context.options)
+    end
 
-      Kubeclient::Client.new(
-          context.api_endpoint + scope,
-          version || context.api_version,
-          ssl_options:  context.ssl_options,
-          auth_options: context.auth_options
-      )
+    def context
+      return nil if CronKubernetes.kubeclient
+      @context ||= KubeclientContext.context
     end
   end
 end
