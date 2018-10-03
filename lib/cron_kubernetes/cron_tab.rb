@@ -23,7 +23,7 @@ module CronKubernetes
 
     # Define a label for our jobs based on an identifier
     def label_selector
-      {"cron-kubernetes-identifier" => CronKubernetes.identifier}
+      {label_selector: "cron-kubernetes-identifier=#{CronKubernetes.identifier}"}
     end
 
     # Find all k8s CronJobs by our label for the identifier
