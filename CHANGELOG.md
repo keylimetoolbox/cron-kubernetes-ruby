@@ -1,3 +1,6 @@
+# v1.1.0
+- Fix issue where all cron jobs in a cluster would be removed, not just ones matching `identifier`
+
 # v1.0.0
 **Breaking Change:**
 - Requires `kubeclient` 3.1.2 or 4.x
