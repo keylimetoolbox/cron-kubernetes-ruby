@@ -22,7 +22,7 @@ Or install it yourself as:
 ## Configuration
 
 You can configure global settings for your cron jobs. Add a file to your source like the example
-below. If you are using Rails, you can add this to something like `config/initializers/cron_kuberentes.rb`.
+below. If you are using Rails, you can add this to something like `config/initializers/cron_kubernetes.rb`.
 
 You _must_ configure the `identifier` and `manifest` settings. The other settings are optional
 and default values are shown below.
