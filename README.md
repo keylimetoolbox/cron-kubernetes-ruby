@@ -161,7 +161,7 @@ Once you have configuration and cluster, then you can run the `cron_kubernetes` 
 to update your cluster. 
 
 ```bash
-cron_kubernetes --configuration config/initializers/cron_kubernetes.rb --schedule config/schedule.rb
+bundle exec cron_kubernetes --configuration config/initializers/cron_kubernetes.rb --schedule config/schedule.rb
 ```
 
 The command will read the provided configuration and current schedule, compare to any 
@@ -173,7 +173,7 @@ loaded both a configuration and a schedule. For example, if they are in the same
 just pass a single value:
 
 ```bash
-cron_kubernetes --schedule schedule.rb
+bundle exec cron_kubernetes --schedule schedule.rb
 ``` 
 
 If you are running in a Rails application where the initializers are auto-loaded, and your 
