@@ -18,7 +18,7 @@ RSpec.describe CronKubernetes::CronTab do
   end
   let(:cron_job_manifest) do
     {
-        apiVersion: "batch/v1beta1",
+        apiVersion: "batch/v1",
         kind:       "CronJob",
         metadata:   {
             name:      "spec-minutely",
@@ -43,11 +43,11 @@ RSpec.describe CronKubernetes::CronTab do
   end
   let(:job) do
     CronKubernetes::CronJob.new(
-        schedule:     "*/1 * * * *",
-        command:      "ls -l",
-        job_manifest: job_manifest,
-        name:         "minutely",
-        identifier:   "spec"
+      schedule:     "*/1 * * * *",
+      command:      "ls -l",
+      job_manifest: job_manifest,
+      name:         "minutely",
+      identifier:   "spec"
     )
   end
   let(:cron_job) do
@@ -55,7 +55,7 @@ RSpec.describe CronKubernetes::CronTab do
   end
 
   before do
-    CronKubernetes::KubernetesClient.any_instance.stubs(:batch_beta1_client).returns client
+    CronKubernetes::KubernetesClient.any_instance.stubs(:batch_client).returns client
     client.stubs(:get_cron_jobs).returns existing
     CronKubernetes::Scheduler.instance.stubs(:schedule).returns schedule
     CronKubernetes.stubs(:identifier).returns("spec")

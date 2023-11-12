@@ -12,11 +12,11 @@ module CronKubernetes
         config = Kubeclient::Config.read(kubeconfig)
 
         CronKubernetes::KubeclientContext::Context.new(
-            config.context.api_endpoint,
-            config.context.api_version,
-            config.context.namespace,
-            auth_options: auth_options(config),
-            ssl_options:  config.context.ssl_options
+          config.context.api_endpoint,
+          config.context.api_version,
+          config.context.namespace,
+          auth_options: auth_options(config),
+          ssl_options:  config.context.ssl_options
         )
       end
 
@@ -29,11 +29,13 @@ module CronKubernetes
       def auth_options(config)
         options = config.context.auth_options
         return options unless options.empty?
+
         google_application_default_credentials
       end
 
       def google_application_default_credentials
         return unless defined?(Google) && defined?(Google::Auth)
+
         {bearer_token: Kubeclient::GoogleApplicationDefaultCredentials.token}
       end
     end

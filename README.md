@@ -111,12 +111,12 @@ There are many other ways to connect and you can do so by providing your own
 # config/initializers/resque-kubernetes.rb
 
 CronKubernetes.configuration do |config|
-  config.kubeclient = Kubeclient::Client.new("http://localhost:8080/apis/batch", "v1beta1")
+  config.kubeclient = Kubeclient::Client.new("http://localhost:8080/apis/batch", "v1")
 end
 ```
 
 Because this uses the `CronJob` resource, make sure to connect to the `/apis/batch` API endpoint and 
-API version `v1beta1` in your client.
+API version `v1` in your client.
 
 ## Usage
 
@@ -207,7 +207,7 @@ https://github.com/keylime-toolbox/cron-kubernetes-ruby.
 ### Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then,
-run `bin/rake` to run the test suite.
+run `rake` to run the test suite.
 
 You can run `bin/console` for an interactive prompt that will allow you to
 experiment.

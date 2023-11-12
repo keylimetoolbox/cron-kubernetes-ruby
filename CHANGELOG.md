@@ -1,3 +1,10 @@
+# v2.0.0
+**Breaking Change:**
+- Requires ruby 2.7 or later
+
+**Changes:**
+- Fix issue where running `cron_kubernetes` would fail with "ResourceNotFoundError"
+
 # v1.1.0
 - Fix issue where all cron jobs in a cluster would be removed, not just ones matching `identifier`
 
