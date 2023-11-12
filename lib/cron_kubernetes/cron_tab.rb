@@ -18,7 +18,7 @@ module CronKubernetes
     private
 
     def client
-      @client ||= CronKubernetes::KubernetesClient.new.batch_beta1_client
+      @client ||= CronKubernetes::KubernetesClient.new.batch_client
     end
 
     # Define a label for our jobs based on an identifier

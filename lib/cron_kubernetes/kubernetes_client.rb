@@ -3,8 +3,8 @@
 module CronKubernetes
   # Encapsulate access to Kubernetes API for different API versions.
   class KubernetesClient
-    def batch_beta1_client
-      @batch_beta1_client ||= client("/apis/batch", "v1beta1")
+    def batch_client
+      @batch_client ||= client("/apis/batch", "v1")
     end
 
     def namespace

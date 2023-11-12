@@ -79,7 +79,7 @@ RSpec.describe CronKubernetes::CronJob do
     it "generates a Kubernetes CronJob manifest for the scheduled command" do
       expect(subject.cron_job_manifest.to_yaml).to eq <<~MANIFEST
         ---
-        apiVersion: batch/v1beta1
+        apiVersion: batch/v1
         kind: CronJob
         metadata:
           name: my-app-hello

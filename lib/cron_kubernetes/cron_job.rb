@@ -18,7 +18,7 @@ module CronKubernetes
     # rubocop:disable Metrics/MethodLength
     def cron_job_manifest
       {
-          "apiVersion" => "batch/v1beta1",
+          "apiVersion" => "batch/v1",
           "kind"       => "CronJob",
           "metadata"   => {
               "name"      => "#{identifier}-#{cron_job_name}",

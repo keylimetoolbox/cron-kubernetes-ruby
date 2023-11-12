@@ -111,12 +111,12 @@ There are many other ways to connect and you can do so by providing your own
 # config/initializers/resque-kubernetes.rb
 
 CronKubernetes.configuration do |config|
-  config.kubeclient = Kubeclient::Client.new("http://localhost:8080/apis/batch", "v1beta1")
+  config.kubeclient = Kubeclient::Client.new("http://localhost:8080/apis/batch", "v1")
 end
 ```
 
 Because this uses the `CronJob` resource, make sure to connect to the `/apis/batch` API endpoint and 
-API version `v1beta1` in your client.
+API version `v1` in your client.
 
 ## Usage
 
