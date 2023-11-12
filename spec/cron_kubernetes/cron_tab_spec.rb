@@ -43,11 +43,11 @@ RSpec.describe CronKubernetes::CronTab do
   end
   let(:job) do
     CronKubernetes::CronJob.new(
-        schedule:     "*/1 * * * *",
-        command:      "ls -l",
-        job_manifest: job_manifest,
-        name:         "minutely",
-        identifier:   "spec"
+      schedule:     "*/1 * * * *",
+      command:      "ls -l",
+      job_manifest: job_manifest,
+      name:         "minutely",
+      identifier:   "spec"
     )
   end
   let(:cron_job) do

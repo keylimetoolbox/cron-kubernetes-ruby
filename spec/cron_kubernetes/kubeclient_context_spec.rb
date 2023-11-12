@@ -58,13 +58,13 @@ RSpec.describe CronKubernetes::KubeclientContext do
     context "without Google default credentials" do
       let(:config) do
         OpenStruct.new(
-            context: OpenStruct.new(
-                api_endpoint: "https://127.0.0.1:8443",
-                api_version:  "v1",
-                namespace:    nil,
-                auth_options: {bearer_token: "token"},
-                ssl_options:  {ca_file: "/path/to/ca.crt"}
-            )
+          context: OpenStruct.new(
+            api_endpoint: "https://127.0.0.1:8443",
+            api_version:  "v1",
+            namespace:    nil,
+            auth_options: {bearer_token: "token"},
+            ssl_options:  {ca_file: "/path/to/ca.crt"}
+          )
         )
       end
 
@@ -82,13 +82,13 @@ RSpec.describe CronKubernetes::KubeclientContext do
     context "with Google default credentials" do
       let(:config) do
         OpenStruct.new(
-            context: OpenStruct.new(
-                api_endpoint: "https://127.0.0.1:8443",
-                api_version:  "v1",
-                namespace:    nil,
-                auth_options: {},
-                ssl_options:  {}
-            )
+          context: OpenStruct.new(
+            api_endpoint: "https://127.0.0.1:8443",
+            api_version:  "v1",
+            namespace:    nil,
+            auth_options: {},
+            ssl_options:  {}
+          )
         )
       end
 

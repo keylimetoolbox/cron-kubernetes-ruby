@@ -44,11 +44,11 @@ module CronKubernetes
 
     def new_cron_job(schedule, command, name)
       CronJob.new(
-          schedule:     schedule,
-          command:      make_command(command),
-          job_manifest: CronKubernetes.manifest,
-          name:         name,
-          identifier:   @identifier
+        schedule:     schedule,
+        command:      make_command(command),
+        job_manifest: CronKubernetes.manifest,
+        name:         name,
+        identifier:   @identifier
       )
     end
 
@@ -58,6 +58,7 @@ module CronKubernetes
 
     def root
       return Rails.root if defined? Rails
+
       Dir.pwd
     end
   end

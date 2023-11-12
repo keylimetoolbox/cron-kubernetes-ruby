@@ -40,6 +40,7 @@ module CronKubernetes
 
     def namespace
       return job_manifest["metadata"]["namespace"] if job_manifest["metadata"] && job_manifest["metadata"]["namespace"]
+
       "default"
     end
 
@@ -57,17 +58,17 @@ module CronKubernetes
     def cron_job_name
       return name if name
       return job_hash(job_manifest["metadata"]["name"]) if job_manifest["metadata"]
+
       pod_template_name
     end
 
-    # rubocop:disable Metrics/AbcSize
     def pod_template_name
       return nil unless job_manifest["spec"] &&
-            job_manifest["spec"]["template"] &&
-            job_manifest["spec"]["template"]["metadata"]
+          job_manifest["spec"]["template"] &&
+          job_manifest["spec"]["template"]["metadata"]
+
       job_hash(job_manifest["spec"]["template"]["metadata"]["name"])
     end
-    # rubocop:enable Metrics/AbcSize
 
     def job_hash(name)
       "#{name}-#{Digest::SHA1.hexdigest(schedule + command.join)[0..7]}"

@@ -16,11 +16,13 @@ module CronKubernetes
     def client(scope, version = nil)
       return CronKubernetes.kubeclient if CronKubernetes.kubeclient
       return unless context
+
       Kubeclient::Client.new(context.endpoint + scope, version || context.version, context.options)
     end
 
     def context
       return nil if CronKubernetes.kubeclient
+
       @context ||= KubeclientContext.context
     end
   end

@@ -24,11 +24,11 @@ RSpec.describe CronKubernetes::CronJob do
 
     it "accepts schedule, command, job_manifest, name parameters" do
       job = CronKubernetes::CronJob.new(
-          schedule:     "30 0 * * *",
-          command:      "/bin/bash -l -c ls\\ -l",
-          job_manifest: manifest,
-          name:         "cron-job",
-          identifier:   "my-app"
+        schedule:     "30 0 * * *",
+        command:      "/bin/bash -l -c ls\\ -l",
+        job_manifest: manifest,
+        name:         "cron-job",
+        identifier:   "my-app"
       )
       expect(job.schedule).to eq "30 0 * * *"
       expect(job.command).to eq "/bin/bash -l -c ls\\ -l"
@@ -68,16 +68,15 @@ RSpec.describe CronKubernetes::CronJob do
   context "#cron_job_manifest" do
     subject do
       CronKubernetes::CronJob.new(
-          schedule:     "*/1 * * * *",
-          command:      ["/bin/bash", "-l", "-c", "echo Hello from the Kubernetes cluster"],
-          job_manifest: manifest,
-          name:         "hello",
-          identifier:   "my-app"
+        schedule:     "*/1 * * * *",
+        command:      ["/bin/bash", "-l", "-c", "echo Hello from the Kubernetes cluster"],
+        job_manifest: manifest,
+        name:         "hello",
+        identifier:   "my-app"
       )
     end
 
     it "generates a Kubernetes CronJob manifest for the scheduled command" do
-      # rubocop:disable Layout/TrailingWhitespace
       expect(subject.cron_job_manifest.to_yaml).to eq <<~MANIFEST
         ---
         apiVersion: batch/v1beta1
@@ -90,7 +89,7 @@ RSpec.describe CronKubernetes::CronJob do
         spec:
           schedule: "*/1 * * * *"
           jobTemplate:
-            metadata: 
+            metadata:
             spec:
               template:
                 spec:
@@ -104,16 +103,15 @@ RSpec.describe CronKubernetes::CronJob do
                     - echo Hello from the Kubernetes cluster
                   restartPolicy: OnFailure
       MANIFEST
-      # rubocop:enable Layout/TrailingWhitespace
     end
 
     context "when no name is provided" do
       subject do
         CronKubernetes::CronJob.new(
-            schedule:     "*/1 * * * *",
-            command:      ["/bin/bash", "-l", "-c", "echo Hello from the Kubernetes cluster"],
-            job_manifest: manifest,
-            identifier:   "my-app"
+          schedule:     "*/1 * * * *",
+          command:      ["/bin/bash", "-l", "-c", "echo Hello from the Kubernetes cluster"],
+          job_manifest: manifest,
+          identifier:   "my-app"
         )
       end
 
