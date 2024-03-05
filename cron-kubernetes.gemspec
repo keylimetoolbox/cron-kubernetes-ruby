@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.description   = "Configure and deploy Kubernetes CronJobs from ruby with a single schedule."
   spec.homepage      = "https://github.com/keylimetoolbox/cron-kubernetes"
   spec.license       = "MIT"
-  spec.required_ruby_version = ">= 2.7"
+  spec.required_ruby_version = ">= 3.2"
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})

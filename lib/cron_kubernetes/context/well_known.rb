@@ -18,7 +18,7 @@ module CronKubernetes
           "v1",
           namespace,
           auth_options: {bearer_token_file: TOKEN_FILE},
-          ssl_options:  ssl_options
+          ssl_options:
         )
       end
 

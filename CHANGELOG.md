@@ -1,3 +1,6 @@
+# v3.0.0
+- Change syntax for ruby 3.2.2
+
 # v2.0.0
 **Breaking Change:**
 - Requires ruby 2.7 or later
