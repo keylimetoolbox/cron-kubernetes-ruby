@@ -45,7 +45,7 @@ RSpec.describe CronKubernetes::CronTab do
     CronKubernetes::CronJob.new(
       schedule:     "*/1 * * * *",
       command:      "ls -l",
-      job_manifest: job_manifest,
+      job_manifest:,
       name:         "minutely",
       identifier:   "spec"
     )

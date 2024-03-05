@@ -17,7 +17,7 @@ module CronKubernetes
       return CronKubernetes.kubeclient if CronKubernetes.kubeclient
       return unless context
 
-      Kubeclient::Client.new(context.endpoint + scope, version || context.version, context.options)
+      Kubeclient::Client.new(context.endpoint + scope, version || context.version, **context.options)
     end
 
     def context

@@ -2,7 +2,7 @@ AllCops:
   Exclude:
     - "gemfiles/*"
   SuggestExtensions: false
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.2
 
 Documentation:
   Exclude:
